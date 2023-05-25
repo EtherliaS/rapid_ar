@@ -1,10 +1,14 @@
 #include <Keyboard.h>
+#include <math.h>
 
-unsigned long currentTime = 0;
 long releaseDebounce = 20;
 
 unsigned long time_activation_z = 0;
 unsigned long time_activation_x = 0;
+
+int stz [4] {500, 500, 500, 500};
+int stx [4] {500, 500, 500, 500};
+int readstate = 0;
 
 bool xPressed = false;
 bool zPressed = false;
@@ -22,10 +26,14 @@ void setup() {
   Serial.begin(9600);
   Keyboard.begin();
 }
+
 void loop() {
   while(1){
     currentTime = micros();
-    if(currentTime % 500 < 20){
+    ReadPins();
+    readstate++;
+    if (readstate == 4) readstate = 0;
+    if(currentTime % 500 < 200){
       checkPins();
     }
   }
@@ -33,11 +41,8 @@ void loop() {
 
 void checkPins(){
   
-  zState = analogRead(A1);
-  zState = analogRead(A1);
-  zState = analogRead(A1);
-  zState = analogRead(A1);
-  xState = analogRead(A2);
+  zState = CalculateAVGZ();
+  xState = CalculateAVGX();
   pr_z = previous_point_z;
   pr_x = previous_point_x;
   previous_point_z = zState;
@@ -70,6 +75,30 @@ void checkPins(){
   else releaseX();
 }
 
+int Roundint(double ee){
+    ee = ee + 0.5;
+    return ((int)ee);
+}
+
+void ReadPins(){
+    stx[readstate] = analogRead(A1);
+    stz[readstate] = analogRead(A2);
+}
+int CalculateAVGZ(){
+    double a = 0;
+    for(int i = 0; i<4; i++){
+        a = a + stz[i];
+    }
+    return Roundint(a/4);
+}
+
+int CalculateAVGX(){
+    double a = 0;
+    for(int i = 0; i<4; i++){
+        a = a + stx[i];
+    }
+    return Roundint(a/4);
+}
 
 void pressX(){
   if (!xPressed){
