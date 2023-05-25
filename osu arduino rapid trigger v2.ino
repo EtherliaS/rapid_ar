@@ -68,8 +68,8 @@ void loop() {
 void checkPins(){
   
   loopCount++;
-  xState = 9.8*pow(10*(analogRead(A3) -551), 0.41);
-  yState = 9.9*pow(10*(analogRead(A2) -537), 0.405);
+  xState = 10*pow(10*(analogRead(A1) - 484), 0.41);
+  yState = 10*pow(10*(analogRead(A2) - 497), 0.42);
   
   xDiff = xState - last_xState1;
   xDiff2 = xState - last_xState3;
