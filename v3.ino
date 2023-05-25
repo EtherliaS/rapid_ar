@@ -1,6 +1,6 @@
 #include <Keyboard.h>
 #include <math.h>
-
+unsigned long currentTime = 0;
 long releaseDebounce = 20;
 
 unsigned long time_activation_z = 0;
